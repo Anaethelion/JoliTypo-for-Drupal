@@ -1,8 +1,8 @@
 <?php
 /**
-* @file
-* A description of what your module does.
-*/
+ * @file
+ * This module uses JoliTypo to alleviate the pain of reading non correctly formatted text on Drupal.
+ */
 
 /**
  * implements hook_libraries_info to declare xautoload lib
@@ -10,20 +10,20 @@
  */
 function jolitypo_libraries_info() {
   $libraries['jolitypo'] = array(
-      'name' => 'jolitypo',
-      'vendor url' => 'https://github.com/jolicode/JoliTypo',
-      'download url' => 'https://github.com/jolicode/JoliTypo/archive/master.zip',
-      'xautoload' => function($api){
-          $api->namespaceRoot('JoliTypo', 'src');
-        },
+    'name' => 'jolitypo',
+    'vendor url' => 'https://github.com/jolicode/JoliTypo',
+    'download url' => 'https://github.com/jolicode/JoliTypo/archive/master.zip',
+    'xautoload' => function ($api) {
+        $api->namespaceRoot('JoliTypo', 'src');
+      },
   );
   $libraries['hyphenator'] = array(
-      'name' => 'hyphenator',
-      'vendor url' => 'https://github.com/heiglandreas/Org_Heigl_Hyphenator',
-      'download url' => 'https://github.com/heiglandreas/Org_Heigl_Hyphenator/archive/master.zip',
-      'xautoload' => function($api){
-          $api->namespaceRoot('Org', 'src');
-        },
+    'name' => 'hyphenator',
+    'vendor url' => 'https://github.com/heiglandreas/Org_Heigl_Hyphenator',
+    'download url' => 'https://github.com/heiglandreas/Org_Heigl_Hyphenator/archive/master.zip',
+    'xautoload' => function ($api) {
+        $api->namespaceRoot('Org', 'src');
+      },
   );
 
   return $libraries;
@@ -49,8 +49,18 @@ function jolitypo_menu() {
  * implements hook_node_presave
  */
 function jolitypo_node_presave($node) {
-  $wrapper = entity_metadata_wrapper('node',$node);
-  $fixer = new JoliTypo\Fixer(array('Ellipsis', 'Dimension', 'Dash', 'FrenchQuotes', 'FrenchNoBreakSpace', 'CurlyQuote', 'Trademark', 'Hyphen'));
+  $wrapper = entity_metadata_wrapper('node', $node);
+  $fixer = new JoliTypo\Fixer(array('Ellipsis', 'Dimension', 'Dash', 'CurlyQuote', 'Trademark', 'Hyphen'));
+
+  //TODO add a field in backend to input IETF language for locale use
+  //$fixer->setLocale($language->language . '_' . strtoupper($language->region));
+
+  $body = array(
+    'summary' => $fixer->fix($wrapper->body->value()['summary']),
+    'value' => $fixer->fix($wrapper->body->value()['value']),
+    'format' => $fixer->fix($wrapper->body->value()['format']),
+  );
+  $wrapper->body->set($body);
 
   $wrapper->body->value()['value'] = $fixer->fix($wrapper->body->value()['value']);
   $wrapper->body->value()['summary'] = $fixer->fix($wrapper->body->value()['summary']);
