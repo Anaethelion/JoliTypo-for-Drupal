@@ -1,0 +1,60 @@
+<?php
+/**
+* @file
+* A description of what your module does.
+*/
+
+/**
+ * implements hook_libraries_info to declare xautoload lib
+ * @return mixed
+ */
+function jolitypo_libraries_info() {
+  $libraries['jolitypo'] = array(
+      'name' => 'jolitypo',
+      'vendor url' => 'https://github.com/jolicode/JoliTypo',
+      'download url' => 'https://github.com/jolicode/JoliTypo/archive/master.zip',
+      'xautoload' => function($api){
+          $api->namespaceRoot('JoliTypo', 'src');
+        },
+  );
+  $libraries['hyphenator'] = array(
+      'name' => 'hyphenator',
+      'vendor url' => 'https://github.com/heiglandreas/Org_Heigl_Hyphenator',
+      'download url' => 'https://github.com/heiglandreas/Org_Heigl_Hyphenator/archive/master.zip',
+      'xautoload' => function($api){
+          $api->namespaceRoot('Org', 'src');
+        },
+  );
+
+  return $libraries;
+}
+
+/**
+ * Implements hook_menu to add settings page
+ */
+function jolitypo_menu() {
+  $items['admin/config/jolitypo'] = array(
+    'title' => 'Jolitypo',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('jolitypo_admin_settings'),
+    'access arguments' => array('access administration pages'),
+    'file' => 'jolitypo.admin.inc',
+    'file path' => drupal_get_path('module', 'jolitypo'),
+  );
+
+  return $items;
+}
+
+/**
+ * implements hook_node_presave
+ */
+function jolitypo_node_presave($node) {
+  $wrapper = entity_metadata_wrapper('node',$node);
+  $fixer = new JoliTypo\Fixer(array('Ellipsis', 'Dimension', 'Dash', 'FrenchQuotes', 'FrenchNoBreakSpace', 'CurlyQuote', 'Trademark', 'Hyphen'));
+
+  $wrapper->body->value()['value'] = $fixer->fix($wrapper->body->value()['value']);
+  $wrapper->body->value()['summary'] = $fixer->fix($wrapper->body->value()['summary']);
+}
+
+//TODO add a textarea filter
+//TODO add a drush command to get the repo for jolitypo and hyphenator
