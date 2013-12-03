@@ -49,13 +49,10 @@ function jolitypo_menu() {
  * implements hook_node_presave
  */
 function jolitypo_node_presave($node) {
-  $wrapper = entity_metadata_wrapper('node', $node);
-  $fixer = new JoliTypo\Fixer(array('Ellipsis', 'Dimension', 'Dash', 'CurlyQuote', 'Trademark', 'Hyphen'));
+  //$wrapper = entity_metadata_wrapper('node', $node);
+  //$fixer = new JoliTypo\Fixer(array('Ellipsis', 'Dimension', 'Dash', 'CurlyQuote', 'Trademark', 'Hyphen'));
 
-  //TODO add a field in backend to input IETF language for locale use
-  //$fixer->setLocale($language->language . '_' . strtoupper($language->region));
-
-  $body = array(
+  /*$body = array(
     'summary' => $fixer->fix($wrapper->body->value()['summary']),
     'value' => $fixer->fix($wrapper->body->value()['value']),
     'format' => $fixer->fix($wrapper->body->value()['format']),
@@ -63,8 +60,45 @@ function jolitypo_node_presave($node) {
   $wrapper->body->set($body);
 
   $wrapper->body->value()['value'] = $fixer->fix($wrapper->body->value()['value']);
-  $wrapper->body->value()['summary'] = $fixer->fix($wrapper->body->value()['summary']);
+  $wrapper->body->value()['summary'] = $fixer->fix($wrapper->body->value()['summary']);*/
 }
 
-//TODO add a textarea filter
+/**
+ * implements hook_field_formatter_info
+ * @return array
+ */
+function jolitypo_field_formatter_info() {
+  return array(
+    'jolitypo_formatter' => array(
+      'label' => t('JoliTypo'),
+      'field types' => array('text', 'text_long', 'text_with_summary'),
+    ),
+  );
+}
+
+/**
+ * implements hook_field_formatter_view
+ * @param $entity_type
+ * @param $entity
+ * @param $field
+ * @param $instance
+ * @param $langcode
+ * @param $items
+ * @param $display
+ * @return array
+ */
+function jolitypo_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  $fixerparams = variable_get('jolitypo_' . $entity->language);
+  unset($fixerparams[0]);
+
+  $fixer = new JoliTypo\Fixer($fixerparams);
+  //TODO improve locale detection with associative array for IETF correspondance
+  $fixer->setLocale($entity->language . '_' . strtoupper($entity->language));
+  $fixed = $fixer->fix($items[0]['safe_value']);
+  $element[0]['#markup'] = $fixed;
+
+  return $element;
+}
+
 //TODO add a drush command to get the repo for jolitypo and hyphenator
