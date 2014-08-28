@@ -29,7 +29,7 @@ function jolitypo_admin_settings($form, &$form_state) {
     $form['jolitypo_' . $language->language]['jolitypo_' . $language->language . '_titles'] = array(
       '#type' => 'checkbox',
       '#title' => t('Use on titles'),
-      '#default_value' => array_key_exists('titles',$values),
+      '#default_value' => array_key_exists('titles', $values),
       '#suffix' => '<br/>',
     );
 
@@ -37,7 +37,7 @@ function jolitypo_admin_settings($form, &$form_state) {
       $form['jolitypo_' . $language->language]['jolitypo_' . $language->language . '_' . $feature] = array(
         '#type' => 'checkbox',
         '#title' => $feature,
-        '#default_value' => array_key_exists($feature,$values),
+        '#default_value' => array_key_exists($feature, $values),
       );
     }
   }

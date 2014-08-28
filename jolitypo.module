@@ -12,18 +12,18 @@ function jolitypo_libraries_info() {
   $libraries['jolitypo'] = array(
     'name' => 'jolitypo',
     'vendor url' => 'https://github.com/jolicode/JoliTypo',
-    'download url' => 'https://github.com/jolicode/JoliTypo/archive/master.zip',
+    'download url' => 'https://github.com/jolicode/JoliTypo/archive/v0.1.4.tar.gz',
     'xautoload' => function ($api) {
-        $api->namespaceRoot('JoliTypo', 'src');
-      },
+      $api->namespaceRoot('JoliTypo', 'src');
+    },
   );
   $libraries['hyphenator'] = array(
     'name' => 'hyphenator',
     'vendor url' => 'https://github.com/heiglandreas/Org_Heigl_Hyphenator',
-    'download url' => 'https://github.com/heiglandreas/Org_Heigl_Hyphenator/archive/master.zip',
+    'download url' => 'https://github.com/heiglandreas/Org_Heigl_Hyphenator/archive/v2.0.3.tar.gz',
     'xautoload' => function ($api) {
-        $api->namespaceRoot('Org', 'src');
-      },
+      $api->namespaceRoot('Org', 'src');
+    },
   );
 
   return $libraries;
