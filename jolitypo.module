@@ -91,17 +91,19 @@ function jolitypo_field_formatter_info() {
  */
 function jolitypo_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   if (($library = libraries_load('jolitypo')) && $library['installed']) {
-    if ($element = cache_get('jolitypo_' . $langcode . '_' . $entity->nid)) {
-      return $element;
-    }
-
-    $element = array();
     //if i18n is not active or if site is not multilingual
     if ($langcode == 'und') {
       $langcode = 'en';
     }
 
+    if ($cache = cache_get('jolitypo_' . $langcode . '_' . $entity->nid)) {
+      return $cache->data;
+    }
+
+    $element = array();
     $fixerparams = variable_get('jolitypo_' . $langcode);
+
+    var_dump($fixerparams);
 
     $fixer = new JoliTypo\Fixer($fixerparams);
 
