@@ -71,7 +71,7 @@ function jolitypo_admin_settings_validation($form, &$form_state) {
       if (strpos($value, 'Quotes')) {
         $multiplequotes++;
         if ($multiplequotes > 1) {
-          form_set_error($value, t('Only one quote par language can be specified : ' . $value));
+          form_set_error($value, t('Only one quote par language can be specified.'));
           return;
         }
       }
