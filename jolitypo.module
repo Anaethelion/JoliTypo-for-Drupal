@@ -96,14 +96,12 @@ function jolitypo_field_formatter_view($entity_type, $entity, $field, $instance,
       $langcode = 'en';
     }
 
-    if ($cache = cache_get('jolitypo_' . $langcode . '_' . $entity->nid)) {
+    if ($cache = cache_get('jolitypo:' . $entity_type . ':' . $field['field_name'] . ':' . $entity->nid, 'cache_field')) {
       return $cache->data;
     }
 
     $element = array();
     $fixerparams = variable_get('jolitypo_' . $langcode);
-
-    var_dump($fixerparams);
 
     $fixer = new JoliTypo\Fixer($fixerparams);
 
@@ -112,7 +110,7 @@ function jolitypo_field_formatter_view($entity_type, $entity, $field, $instance,
     $fixed = $fixer->fix($items[0]['safe_value']);
     $element[0]['#markup'] = $fixed;
 
-    cache_set('jolitypo_' . $langcode . '_' . $entity->nid, $element);
+    cache_set('jolitypo:' . $entity_type . ':' . $field['field_name'] . ':' . $entity->nid, $element, 'cache_field');
 
     return $element;
   }
