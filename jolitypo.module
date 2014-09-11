@@ -90,10 +90,18 @@ function jolitypo_field_formatter_info() {
  * @return array
  */
 function jolitypo_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
-  if (($library = libraries_load('jolitypo')) && !empty($library['loaded'])) {
+  if (($library = libraries_load('jolitypo')) && $library['installed']) {
+    if ($element = cache_get('jolitypo_' . $langcode . '_' . $entity->nid)) {
+      return $element;
+    }
+
     $element = array();
-    $fixerparams = variable_get('jolitypo_' . $entity->language);
-    unset($fixerparams[0]);
+    //if i18n is not active or if site is not multilingual
+    if ($langcode == 'und') {
+      $langcode = 'en';
+    }
+
+    $fixerparams = variable_get('jolitypo_' . $langcode);
 
     $fixer = new JoliTypo\Fixer($fixerparams);
 
@@ -101,6 +109,8 @@ function jolitypo_field_formatter_view($entity_type, $entity, $field, $instance,
     $fixer->setLocale($entity->language . '_' . strtoupper($entity->language));
     $fixed = $fixer->fix($items[0]['safe_value']);
     $element[0]['#markup'] = $fixed;
+
+    cache_set('jolitypo_' . $langcode . '_' . $entity->nid, $element);
 
     return $element;
   }
