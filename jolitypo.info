@@ -1,6 +1,6 @@
 name = JoliTypo
 description = A description of what your module does.
 core = 7.x
-dependencies[] = xautoload
-dependencies[] = libraries
+dependencies[] = xautoload (>=7.x-5.0)
+dependencies[] = libraries (>=7.x-2.2)
 dependencies[] = entity
