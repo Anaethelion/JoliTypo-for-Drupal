@@ -40,6 +40,14 @@ function jolitypo_admin_settings($form, &$form_state) {
         '#default_value' => array_key_exists($feature, $values),
       );
     }
+
+    $form['jolitypo_' . $language->language]['jolitypo_' . $language->language . '_hyphenator_lang'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Hyphenator language',
+      '#size' => '5',
+      '#description' => t('There is only some locale available for this fixer, default is en_GB: af_ZA, ca, da_DK, de_AT, de_CH, de_DE, en_GB, en_UK, et_EE, fr, hr_HR, hu_HU, it_IT, lt_LT, nb_NO, nn_NO, nl_NL, pl_PL, pt_BR, ro_RO, ru_RU, sk_SK, sl_SI, sr, zu_ZA.'),
+      '#default_value' => array_key_exists('hyphenator_lang', $values),
+    );
   }
 
   return system_settings_form($form);
