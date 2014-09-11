@@ -90,17 +90,20 @@ function jolitypo_field_formatter_info() {
  * @return array
  */
 function jolitypo_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
-  $element = array();
-  $fixerparams = variable_get('jolitypo_' . $entity->language);
-  unset($fixerparams[0]);
+  if (($library = libraries_load('jolitypo')) && !empty($library['loaded'])) {
+    $element = array();
+    $fixerparams = variable_get('jolitypo_' . $entity->language);
+    unset($fixerparams[0]);
 
-  $fixer = new JoliTypo\Fixer($fixerparams);
-  //TODO improve locale detection with associative array for IETF correspondance
-  $fixer->setLocale($entity->language . '_' . strtoupper($entity->language));
-  $fixed = $fixer->fix($items[0]['safe_value']);
-  $element[0]['#markup'] = $fixed;
+    $fixer = new JoliTypo\Fixer($fixerparams);
 
-  return $element;
+    //TODO improve locale detection with associative array for IETF correspondance
+    $fixer->setLocale($entity->language . '_' . strtoupper($entity->language));
+    $fixed = $fixer->fix($items[0]['safe_value']);
+    $element[0]['#markup'] = $fixed;
+
+    return $element;
+  }
 }
 
 //TODO add a drush command to get the repo for jolitypo and hyphenator
