@@ -48,24 +48,6 @@ function jolitypo_menu() {
 }
 
 /**
- * implements hook_node_presave
- */
-function jolitypo_node_presave($node) {
-  //$wrapper = entity_metadata_wrapper('node', $node);
-  //$fixer = new JoliTypo\Fixer(array('Ellipsis', 'Dimension', 'Dash', 'CurlyQuote', 'Trademark', 'Hyphen'));
-
-  /*$body = array(
-    'summary' => $fixer->fix($wrapper->body->value()['summary']),
-    'value' => $fixer->fix($wrapper->body->value()['value']),
-    'format' => $fixer->fix($wrapper->body->value()['format']),
-  );
-  $wrapper->body->set($body);
-
-  $wrapper->body->value()['value'] = $fixer->fix($wrapper->body->value()['value']);
-  $wrapper->body->value()['summary'] = $fixer->fix($wrapper->body->value()['summary']);*/
-}
-
-/**
  * implements hook_field_formatter_info
  * @return array
  */
@@ -96,7 +78,11 @@ function jolitypo_field_formatter_view($entity_type, $entity, $field, $instance,
       $langcode = 'en';
     }
 
-    if ($cache = cache_get('jolitypo:' . $entity_type . ':' . $field['field_name'] . ':' . $entity->nid, 'cache_field')) {
+    $ids = entity_extract_ids($entity_type,$entity);
+
+    $cache_key = 'jolitypo:' . $entity_type . ':' . $field['field_name'] . ':' . $ids[0] . ':' . $ids[1];
+
+    if ($cache = cache_get($cache_key, 'cache_field')) {
       return $cache->data;
     }
 
@@ -110,10 +96,8 @@ function jolitypo_field_formatter_view($entity_type, $entity, $field, $instance,
     $fixed = $fixer->fix($items[0]['safe_value']);
     $element[0]['#markup'] = $fixed;
 
-    cache_set('jolitypo:' . $entity_type . ':' . $field['field_name'] . ':' . $entity->nid, $element, 'cache_field');
+    cache_set($cache_key, $element, 'cache_field');
 
     return $element;
   }
 }
-
-//TODO add a drush command to get the repo for jolitypo and hyphenator
