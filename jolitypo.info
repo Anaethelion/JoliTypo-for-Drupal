@@ -1,5 +1,5 @@
 name = JoliTypo
-description = A description of what your module does.
+description = Intended to bring the awesomeness of JoliTypo and Hyphenator to Drupal 7 (and 8 later on)
 core = 7.x
 dependencies[] = xautoload (>=7.x-5.0)
 dependencies[] = libraries (>=7.x-2.2)
